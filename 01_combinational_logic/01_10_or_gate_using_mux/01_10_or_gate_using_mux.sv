@@ -16,7 +16,9 @@ endmodule
 //----------------------------------------------------------------------------
 // Task
 //----------------------------------------------------------------------------
-
+// Task:
+// Implement or gate using instance(s) of mux,
+// constants 0 and 1, and wire connections
 module or_gate_using_mux
 (
     input  a,
@@ -24,10 +26,12 @@ module or_gate_using_mux
     output o
 );
 
-  // Task:
-
-  // Implement or gate using instance(s) of mux,
-  // constants 0 and 1, and wire connections
-
-
+mux mux_or
+(
+    .d0(b),
+    .d1(1'b1),
+    .sel(a),
+    .y(o)
+);
+  
 endmodule
