@@ -16,16 +16,29 @@ module serial_to_parallel
     output logic               parallel_valid,
     output logic [width - 1:0] parallel_data
 );
-    // Task:
-    // Implement a module that converts single-bit serial data to the multi-bit parallel value.
-    //
-    // The module should accept one-bit values with valid interface in a serial manner.
-    // After accumulating 'width' bits and receiving last 'serial_valid' input,
-    // the module should assert the 'parallel_valid' at the same clock cycle
-    // and output 'parallel_data' value.
-    //
-    // Note:
-    // Check the waveform diagram in the README for better understanding.
 
+  logic [width - 1:0]            shift_reg;  
+  logic [$clog2(width + 1) - 1:0] cnt;       
+
+  
+  wire [width:0]     ext     = {serial_data, shift_reg};
+  wire [width - 1:0] shifted = ext [width:1];
+
+  
+  wire last_bit = serial_valid & (cnt == width - 1);
+
+  assign parallel_valid = last_bit;
+  assign parallel_data  = shifted;   
+
+  always_ff @ (posedge clk)
+    if (rst) begin
+      shift_reg <= '0;
+      cnt       <= '0;
+    end
+    else if (serial_valid) begin
+      shift_reg <= shifted;
+      cnt       <= last_bit ? '0 : cnt + 1'b1;
+    end
 
 endmodule
+
